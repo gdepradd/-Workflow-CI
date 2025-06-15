@@ -17,4 +17,4 @@ SHELL ["conda", "run", "-n", "mlflow-env", "/bin/bash", "-c"]
 EXPOSE 5005
 
 # Jalankan skrip modelling.py saat container dijalankan
-CMD ["conda", "run", "-n", "mlflow-env", "python", "modelling.py"]
+CMD ["conda", "run", "-n", "mlflow-env", "python", "modeling.py"]
