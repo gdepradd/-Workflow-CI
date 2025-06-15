@@ -3,8 +3,7 @@ name: mlflow-diabetic-project
 conda_env: conda.yaml
 
 entry_points:
-  entry_points:
   main:
     parameters:
       run_name_suffix: {type: str, default: "modelling"}
-    command: "python modelling.py"
+    command: "python modeling.py"
