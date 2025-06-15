@@ -17,9 +17,11 @@ if os.environ.get("DAGSHUB_USERNAME") and os.environ.get("DAGSHUB_TOKEN"):
     mlflow.set_tracking_uri("https://dagshub.com/gdepradd/mlflow-diabetic-project.mlflow")
     use_remote = True
 else:
-    os.makedirs("mlruns", exist_ok=True)
-    mlflow.set_tracking_uri("file:./mlruns")
+    tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "file:./mlruns")
+    os.makedirs(tracking_uri.replace("file:", ""), exist_ok=True)
+    mlflow.set_tracking_uri(tracking_uri)
     use_remote = False
+
 
 mlflow.set_experiment("mlflow-diabetic-project")
 
