@@ -7,7 +7,7 @@ import mlflow
 
 # Argument parsing
 parser = argparse.ArgumentParser()
-parser.add_argument("--input_file", type=str, required=True)
+# parser.add_argument("--input_file", type=str, required=True)
 parser.add_argument("--output_dir", type=str, default="preprocessing")
 parser.add_argument("--test_size", type=float, default=0.2)
 parser.add_argument("--random_state", type=int, default=42)
@@ -28,7 +28,7 @@ else:
 
 # Load and preprocess dataset
 with mlflow.start_run(run_name="Preprocessing_Diabetes_SMOTE"):
-    df = pd.read_csv(args.input_file)
+    df = pd.read_csv('dataset_smote.csv')
 
     selected_columns = ['Age', 'Sex', 'GenHlth', 'MentHlth', 'PhysHlth',
                         'BMI', 'HvyAlcoholConsump', 'HighChol', 'PhysActivity', 'Diabetes_binary']
