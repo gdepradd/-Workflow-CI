@@ -24,7 +24,7 @@ else:
 mlflow.set_experiment("mlflow-diabetic-project")
 
 def preprocess_and_log():
-    with mlflow.start_run(run_name="Preprocessing_Diabetes_SMOTE"):
+    with mlflow.start_run(run_name="Preprocessing_Diabetes_SMOTE", nested=True):
 
         df = pd.read_csv(input_path)
 
