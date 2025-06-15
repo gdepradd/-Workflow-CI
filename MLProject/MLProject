@@ -5,13 +5,11 @@ conda_env: conda.yaml
 entry_points:
   train:
     parameters:
-      
       output_dir: {type: str, default: preprocessing}
       test_size: {type: float, default: 0.2}
       random_state: {type: int, default: 42}
     command: >
       python modeling.py
-      
       --output_dir {output_dir}
       --test_size {test_size}
       --random_state {random_state}

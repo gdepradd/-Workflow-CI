@@ -57,7 +57,7 @@ with mlflow.start_run(run_name="Preprocessing_Diabetes_SMOTE"):
     train_df.to_csv(train_path, index=False)
     test_df.to_csv(test_path, index=False)
 
-    mlflow.log_param("input_file", args.input_file)
+    # mlflow.log_param("input_file", args.input_file)
     mlflow.log_param("output_dir", args.output_dir)
     mlflow.log_param("test_size", args.test_size)
     mlflow.log_param("random_state", args.random_state)
