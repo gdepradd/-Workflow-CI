@@ -48,10 +48,11 @@ jobs:
       id: get_run_id
       working-directory: ./MLProject
       run: |
-        echo "Finding latest run_id..."
-        RUN_ID=$(ls -td mlruns/0/*/ 2>/dev/null | head -n 1 | cut -d'/' -f3 || echo "none")
+        echo "Finding latest run_id from mlflow..."
+        RUN_ID=$(mlflow runs list --experiment-name mlflow-diabetic-project --max-results 1 | awk 'NR==2 {print $1}')
         echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
         echo "Latest run_id: $RUN_ID"
+
 
     - name: Install Git LFS
       run: |
