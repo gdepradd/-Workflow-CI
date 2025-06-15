@@ -43,7 +43,7 @@ jobs:
         run: |
           # Run MLflow Project
           python modeling.py \
-            --data_path=MLProject/dataset_smote.csv \
+            --input_file=MLProject/dataset_smote.csv \
             --model_output=models/model.pkl \
             --test_size=0.2 \
             --random_state=42
