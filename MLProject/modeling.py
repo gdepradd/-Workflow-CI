@@ -76,3 +76,5 @@ with mlflow.start_run(run_name="Preprocessing_Diabetes_SMOTE"):
         print("📍 Tracking MLflow di DagsHub aktif.")
     else:
         print("📍 Tracking MLflow tersimpan secara lokal di ./mlruns")
+
+    #Tes
