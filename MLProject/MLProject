@@ -5,5 +5,5 @@ conda_env: conda.yaml
 entry_points:
   main:
     parameters:
-      run_name_suffix: {type: str, default: "modelling"}
+      run_name_suffix: {type: str, default: "modeling"}
     command: "python modeling.py"
