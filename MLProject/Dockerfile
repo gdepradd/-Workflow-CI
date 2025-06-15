@@ -1,20 +1,23 @@
-# Gunakan base image dengan Miniconda
 FROM continuumio/miniconda3
 
-# Tentukan direktori kerja di dalam container
 WORKDIR /app
 
-# Salin semua file project ke dalam container
-COPY . /app
+# Copy only conda.yaml first for better layer caching
+COPY conda.yaml .
 
-# Salin dan install environment dari conda.yaml
-RUN conda env create -f conda.yaml
+# Update conda and create environment
+RUN conda update -n base -c defaults conda && \
+    conda env create -f conda.yaml && \
+    conda clean -afy
 
-# Aktifkan shell dengan conda environment
-SHELL ["conda", "run", "-n", "mlflow-env", "/bin/bash", "-c"]
+# Copy the rest of the application
+COPY . .
 
-# Deklarasikan port yang akan digunakan
+# Set PATH to use the conda environment by default
+ENV PATH /opt/conda/envs/mlflow-env/bin:$PATH
+
+# Expose the port
 EXPOSE 5005
 
-# Jalankan skrip modelling.py saat container dijalankan
-CMD ["conda", "run", "-n", "mlflow-env", "python", "modeling.py"]
+# Run the script
+ENTRYPOINT ["python", "modeling.py"]
