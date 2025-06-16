@@ -42,7 +42,8 @@ jobs:
           python modeling.py \
             --output_dir=models/model.pkl \
             --test_size=0.2 \
-            --random_state=42
+            --random_state=42\
+            --model_output=models/smote_model.pkl
 
       - name: Upload artifacts to GitHub Actions
         uses: actions/upload-artifact@v4
