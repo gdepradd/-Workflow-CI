@@ -4,13 +4,14 @@ import pandas as pd
 from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split
 import mlflow
-
+import joblib
 # Argument parsing
 parser = argparse.ArgumentParser()
 # parser.add_argument("--input_file", type=str, required=True)
 parser.add_argument("--output_dir", type=str, default="preprocessing")
 parser.add_argument("--test_size", type=float, default=0.2)
 parser.add_argument("--random_state", type=int, default=42)
+parser.add_argument("--model_output", type=str, required=True)
 args = parser.parse_args()
 
 # MLflow setup
@@ -48,7 +49,9 @@ with mlflow.start_run(run_name="Preprocessing_Diabetes_SMOTE"):
     cleaned_path = os.path.join(args.output_dir, "dataset_smote.csv")
     train_path = os.path.join(args.output_dir, "train_data.csv")
     test_path = os.path.join(args.output_dir, "test_data.csv")
-
+    model_path = os.path.join(args.output_dir, "model.pkl")
+    joblib.dump(smote, args.model_output)
+    mlflow.log_artifact(args.model_output)
     df_resampled.to_csv(cleaned_path, index=False)
 
     train_df, test_df = train_test_split(
