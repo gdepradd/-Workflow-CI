@@ -1,19 +1,18 @@
 name: Workflow CI
+
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-  workflow_dispatch: # Allows manual triggering
+  workflow_dispatch: # Untuk pemicu manual
 
 jobs:
-  train_and_deploy:
+  train_and_log:
     runs-on: ubuntu-latest
-    steps:
-      - name: Set up job
-        run: echo "Setting up job..."
 
-      - name: Run actions/checkout@v3
+    steps:
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python 3.12.7
@@ -21,7 +20,7 @@ jobs:
         with:
           python-version: "3.12.7"
 
-      - name: Check Env
+      - name: Verify Python & Environment
         run: |
           python --version
           pip --version
@@ -34,65 +33,22 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f MLProject/requirements.txt ]; then pip install -r MLProject/requirements.txt; fi
 
-      - name: Run mlflow project
-        shell: bash -l {0}
+      - name: Run MLflow project
         working-directory: ./MLProject
         env:
           DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
           DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
         run: |
-          # Run MLflow Project
           python modeling.py \
             --output_dir=models/model.pkl \
             --test_size=0.2 \
             --random_state=42
 
-      - name: Get latest MLflow run_id
-        working-directory: ./MLProject
-        run: |
-          # Contoh perintah untuk mendapatkan run_id terakhir
-          echo "RUN_ID=$(mlflow runs list -v | grep -v 'Run ID' | head -1 | awk '{print $4}')" >> $GITHUB_ENV
-          echo "Latest MLflow run_id: ${{ env.RUN_ID }}"
-
-      - name: Install Python dependencies
-        run: |
-          pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
-
-
-      - name: Build Docker Model
-        uses: docker/build-push-action@v5
+      - name: Upload artifacts to GitHub Actions
+        uses: actions/upload-artifact@v4
         with:
-          context: ./MLProject
-          push: false
-          tags: ml-workflow:latest
-
-      - name: Log in to Docker Hub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-      - name: Tag Docker Image
-        if: github.event_name != 'pull_request'
-        run: |
-          docker tag ml-workflow:latest ${{ secrets.DOCKER_HUB_USERNAME }}/ml-workflow:latest
-          docker tag ml-workflow:latest ${{ secrets.DOCKER_HUB_USERNAME }}/ml-workflow:${{ github.sha }}
-
-      - name: Push Docker Image
-        if: github.event_name != 'pull_request'
-        run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/ml-workflow:latest
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/ml-workflow:${{ github.sha }}
-
-      - name: Post Log in to Docker Hub
-        run: echo "Post login to Docker Hub completed"
-
-      - name: Post Set up Python 3.12.7
-        run: echo "Post Python setup completed"
-
-      - name: Post Run actions/checkout@v3
-        run: echo "Post checkout completed"
-
-      - name: Complete job
-        run: echo "Workflow completed successfully!"
+          name: trained-model-and-preprocessing
+          path: |
+            MLProject/models/
+            MLProject/preprocessing/
+            MLProject/mlruns/
